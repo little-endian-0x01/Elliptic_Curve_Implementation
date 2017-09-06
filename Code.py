@@ -5,7 +5,6 @@
 # importing libraries
 import matplotlib.pyplot as plt
 import numpy as np
-import math
 
 def input_data():
     print("\tAn elliptic curve is a plane curve defined\n\tby an equation of the form (Weierstrass equation)- ")
