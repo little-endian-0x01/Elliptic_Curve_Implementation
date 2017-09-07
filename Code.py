@@ -6,13 +6,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def input_data():
-    print("\tAn elliptic curve is a plane curve defined\n\tby an equation of the form (Weierstrass equation)- ")
-    print("\n\t\t y^2 = x^3 + a*x + b\n")
-    a = int(input("Please Enter the value of a: "))
-    b = int(input("Please Enter the value of b: "))
-    plot_graph(a,b)
-
 def plot_graph(a,b):
     print("\nThe Graph for given equation is : ")
     fig, ax = plt.subplots()
@@ -22,4 +15,9 @@ def plot_graph(a,b):
         x.ravel(), y.ravel(), y**2 - x**3 - a*x -b, [0])
     plt.show()
 
-input_data()
+print("\tAn elliptic curve is a plane curve defined\n\tby an equation of the form (Weierstrass equation)- ")
+print("\n\t\t y^2 = x^3 + a*x + b\n")
+prime = int(input("Please Enter a prime number:  "))
+a = int(input("Please Enter the value of a:  "))
+b = int(input("Please Enter the value of b: "))
+plot_graph(a,b)
