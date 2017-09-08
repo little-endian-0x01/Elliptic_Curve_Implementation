@@ -9,7 +9,7 @@ from random import randint
 
 # Global Variables
 Points_x, Points_y = [],[]
-xGenerator, yGenerator = 0,0
+Global_x, Global_y = 0,0
 
 # Function to plot graph
 def Plot_Graph(a,b):
@@ -61,7 +61,7 @@ def Base_Point(a,prime):
             TempArray.append(x1)
 
         if set(Points_x).intersection(set(TempArray)) != 0:
-            xGenerator, yGenerator = x, y
+            Global_x, Global_y = x, y
             print(" => (" + str(x) + "," + str(y) + ") ")
             break
         else:
@@ -77,7 +77,7 @@ def Key_Generation(a,prime):
     print("\nThe Random Number Chosen(The Private Key) is %d. ", privateKey)
 
     # Public Key Generation
-    x1, y1 = xGenerator, yGenerator
+    x1, y1 = Global_x, Global_y
     for i in range(0, privateKey):
         x1, y1 = addPoints(x1, y1, x1, y1, a, prime)
     PublicKey_x, PublicKey_y = x1, y1
@@ -88,29 +88,30 @@ def Key_Generation(a,prime):
 
     # Generating C1 value
     print("The Cipher C1 is: ")
-    x = xGenerator
-    y = yGenerator
-    x1 = x
-    y1 = y
     for i in range(0, k):
-        x1, y1 = addPoints(x1, y1, x, y, a, p)
-    xCipher1 = x1
-    yCipher1 = y1
-    print(" (" + str(xCipher1) + "," + str(yCipher1) + ") ")
+        x1, y1 = addPoints(Global_x, Global_y, Global_x, Global_y, a, prime)
+    print(" (" + str(x1) + "," + str(y1) + ") ")
 
     # Generating C1 value
     print("The Cipher C2 is: ")
-    x = PublicKey_x
-    y = PublicKey_y
-    x1 = x
-    y1 = y
     for i in range(0, k):
-        x1, y1 = addPoints(x1, y1, x, y, a, p)
-    xPb = x1
-    yPb = y1
+        x1, y1 = addPoints(PublicKey_x, PublicKey_y, PublicKey_x, PublicKey_y, a, prime)
+        return x1,y1
 
-    xCipher2, yCipher2 = addPoints(xPm, yPm, xPb, yPb, a, p)
-    print(" (" + str(xCipher2) + "," + str(yCipher2) + ") ")
+# Generating Message coordinates (Here ASCII conversion)
+def Message_Generation(message):
+    x, y = ord(message), ord(message)
+    print ("Message Coordinates are - (%d,%d)",x,y)
+    return x,y
+
+# Generating Cipher Text
+def Generation_CipherText(x1,y1,a,prime):
+    cipher_x, cipher_y = addPoints(x, y, x1, y1, a, prime)
+    print(" (" + str(cipher_x) + "," + str(cipher_y) + ") ")
+
+###########################################################################################################
+############################################## MAIN CODING ################################################
+###########################################################################################################
 
 # Printing Welcome Message
 print("\tAn elliptic curve is a plane curve defined\n\tby an equation of the form (Weierstrass equation)- ")
@@ -119,18 +120,25 @@ print("\n\t\t y^2 = x^3 + a*x + b\n")
 # Taking Input a,b and prime
 def Input_Data():
     prime = int(input("Please Enter a prime number:  "))
-    a,b = 0,0
     a = int(input("Please Enter the value of a:  "))
     b = int(input("Please Enter the value of b: "))
+    message = input("Please Enter the data to be send(Single letter between a-z) : ")
     if (((4 * (a ** 3)) + (27 * (b ** 2))) % prime) == 0:
         print("a and b values don't satisfy basic condition.\n")
         print("Enter again: ")
         Input_Data()
     else:
-        return a,b,prime
+        return a, b, prime, message
 
-a, b, prime = Input_Data()
+a, b, prime, message = Input_Data()
 Plot_Graph(a,b)
 Point_Generation(a,b,prime)
 Base_Point(a,prime)
-Key_Generation(a,prime)
+x1,y1 = Key_Generation(a,prime)
+x,y = Message_Generation(message)
+Generation_CipherText(x,y,x1,y1,a,prime)
+
+'''
+printing statement
+addition Function
+'''
