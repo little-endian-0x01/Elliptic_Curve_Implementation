@@ -33,7 +33,7 @@ def Point_Generation(a,b,prime):
 # Finding Inverse Modulo
 def inverse(prime, num):
     if num<0:
-        num = num + p
+        num = num + prime
     for i in range(1, prime):
         if (num * i) % prime == 1:
             return i
@@ -43,26 +43,12 @@ def inverse(prime, num):
 # Function to add to points on Ellipic Curve
 def Algebraic_Addition(x1, y1, x2, y2, a, prime):
     if (x1 == x2) and (y1 == y2):
-        lamdba_value = (((3 * (x1 ** 2)) + a) * inverse(prime, (2 * y1))% prime)
+        lamdba_value = (((3 * (x1 ** 2)) + a) * inverse(prime, (2 * y1))) % prime
     else:
-        lamdba_value = ((y2 - y1) * ((inverse(prime, (x2 - x1))) % prime))
+        lamdba_value = ((y2 - y1) * inverse(prime, (x2 - x1))) % prime
 
     x3 = ((lamdba_value**2) - x2 - x1) % prime
     y3 = ((lamdba_value*(x1 - x3)) - y1) % prime
-    return x3, y3
-
-# Function to add Elliptic Points for Decrption
-def Decryption_Addition(x1, y1, x2, y2 ,a, prime):
-    if x1 == x2 and y1 == y2:
-        lambda_value = ((3 * (x1 ** 2) + _a) * inverse(p, 2 * y1)) % prime
-    else:
-        lambda_value = ((y2 - y1) * inverse(p, x2 - x1)) % prime
-    x3 = (lambda_value**2 - x2 - x1) % p
-    y3 = (lambda_value*(x1 - x3) - y1) % p
-    if x3<0:
-        x3 = x3 + p
-    if y3<0:
-        y3 = y3 + p
     return x3, y3
 
 # Generating Base Points of Elliptic Curve
@@ -109,19 +95,21 @@ def Key_Generation(Global_x,Global_y,a,prime):
     print("\nThe Random value k is : ", k)
 
     # Generating C1 value
+    C1x, C1y = Global_x, Global_y
     for i in range(0, k):
-        x, y = Algebraic_Addition(Global_x, Global_y, Global_x, Global_y, a, prime)
-    print("\nThe CipherKey C1 is: (%s,%s)" %(x,y))
+        C1x, C1y = Algebraic_Addition(C1x, C1y, Global_x, Global_y, a, prime)
+    print("\nThe CipherKey C1 is: (%s,%s)" %(C1x,C1y))
 
     # Generating C2 value
+    C2x, C2y = PublicKey_x, PublicKey_y
     for i in range(0, k):
-        x1, y1 = Algebraic_Addition(PublicKey_x, PublicKey_y, PublicKey_x, PublicKey_y, a, prime)
-    print("\nThe CipherKey C2 is: (%s,%s)" %(x1,y1))
-    return x,y,x1,y1,privateKey
+        C2x, C2y = Algebraic_Addition(C2x, C2y, PublicKey_x, PublicKey_y, a, prime)
+    print("\nThe CipherKey C2 is: (%s,%s)" %(C2x,C2y))
+    return C1x,C1y,C2x,C2y,privateKey
 
 # Generating Message coordinates (Here ASCII conversion)
-def Message_Generation(message):
-    Mx, My = ord(message), ord(message)
+def Message_Generation(message,prime):
+    Mx, My = ord(message) - 96, ord(message) - 96
     print ("\n-----------------------------------------------\n")
     print ("Encryption Process starts here : \n")
     print ("Message Coordinates are - (%s,%s)\n" %(Mx,My))
@@ -132,14 +120,15 @@ def Generation_CipherText(x,y,x1,y1,a,prime):
     cipher_x, cipher_y = Algebraic_Addition(x, y, x1, y1, a, prime)
     print("Cipher Text is: (%s,%s)" %(cipher_x,cipher_y))
 
-def Decryption_Process(x,y,x1,y1,privateKey,a,prime):
+# Decryption Process
+def Decryption_Process(C1x,C1y,C2x,C2y,privateKey,a,prime):
     print ("\n-----------------------------------------------\n")
     print ("Decryption Process starts here : \n")
-    x2,y2 = x,y
+    TempX, TempY = C1x, C1y
     for i in range(0,privateKey):
-        x2,y2 = Algebraic_Addition(x2, y2, x, y, a, prime)
-    DecryptX, DecryptY = Algebraic_Addition(x2, (y2*(-1) + prime), x1, y1, a, prime)
-    print("The Decrypted Message is: %s" %(chr(DecryptX)))
+        TempX,TempY = Algebraic_Addition(TempX, TempY, C1x, C1y, a, prime)
+    DecryptX, DecryptY = Algebraic_Addition(TempX, (TempY*(-1) + prime), C2x, C2y, a, prime)
+    print("The Decrypted Message is: %s" %(chr(DecryptX+96)))
 
 
 ###########################################################################################################
@@ -163,11 +152,19 @@ def Input_Data():
     else:
         return a, b, prime, message
 
+# Taking Input
 a, b, prime, message = Input_Data()
-# Plot_Graph(a,b)
+# Plotting Graph
+Plot_Graph(a,b)
+# Generate Points on Elliptic Curve
 Points_x, Points_y = Point_Generation(a,b,prime)
+# Generating All Possible Base Points
 Global_x, Global_y = Base_Point(Points_x,Points_y,a,prime)
-x,y,x1,y1,privateKey = Key_Generation(Global_x,Global_y,a,prime)
-Mx,My = Message_Generation(message)
-Generation_CipherText(Mx,My,x1,y1,a,prime)
-Decryption_Process(x,y,x1,y1,privateKey,a,prime)
+# Generating C1 and C2 Keys
+C1x,C1y,C2x,C2y,privateKey = Key_Generation(Global_x,Global_y,a,prime)
+# Finding Message ASCII coordinates
+Mx,My = Message_Generation(message,prime)
+# Generate C = C1 + C2 cipherText
+Generation_CipherText(Mx,My,C2x,C2y,a,prime)
+# Decrypt the message sent
+Decryption_Process(C1x,C1y,C2x,C2y,privateKey,a,prime)
