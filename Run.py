@@ -4,7 +4,6 @@
 
 # importing libraries
 from pyfiglet import Figlet
-# from Code import *
 from Modules.Input import *
 from Modules.GraphPlotting import *
 from Modules.Points_Generation import *
