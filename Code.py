@@ -119,6 +119,7 @@ def Message_Generation(message,prime):
 def Generation_CipherText(x,y,x1,y1,a,prime):
     cipher_x, cipher_y = Algebraic_Addition(x, y, x1, y1, a, prime)
     print("Cipher Text is: (%s,%s)" %(cipher_x,cipher_y))
+    return cipher_x, cipher_y
 
 # Decryption Process
 def Decryption_Process(C1x,C1y,C2x,C2y,privateKey,a,prime):
@@ -139,7 +140,7 @@ def Decryption_Process(C1x,C1y,C2x,C2y,privateKey,a,prime):
 print("\tAn elliptic curve is a plane curve defined\n\tby an equation of the form (Weierstrass equation)- ")
 print("\n\t\t y^2 = x^3 + a*x + b\n")
 
-# Taking Input a,b and prime
+# Taking Input a,b and prime and message
 def Input_Data():
     prime = int(input("Please Enter a prime number:  "))
     a = int(input("Please Enter the value of a:  "))
@@ -152,6 +153,8 @@ def Input_Data():
     else:
         return a, b, prime, message
 
+'''
+khera - 7358527090
 # Taking Input
 a, b, prime, message = Input_Data()
 # Plotting Graph
@@ -165,6 +168,7 @@ C1x,C1y,C2x,C2y,privateKey = Key_Generation(Global_x,Global_y,a,prime)
 # Finding Message ASCII coordinates
 Mx,My = Message_Generation(message,prime)
 # Generate C = C1 + C2 cipherText
-Generation_CipherText(Mx,My,C2x,C2y,a,prime)
+cipher_x, cipher_y = Generation_CipherText(Mx,My,C2x,C2y,a,prime)
 # Decrypt the message sent
-Decryption_Process(C1x,C1y,C2x,C2y,privateKey,a,prime)
+Decryption_Process(C1x,C1y,cipher_x, cipher_y,privateKey,a,prime)
+'''
