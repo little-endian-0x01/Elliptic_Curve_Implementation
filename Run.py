@@ -5,11 +5,11 @@
 # importing libraries
 from pyfiglet import Figlet
 # from Code import *
-from Input import *
-from GraphPlotting import *
-from Points_Generation import *
-from GraphPlotting import *
-from GraphPlotting import *
+from Modules.Input import *
+from Modules.GraphPlotting import *
+from Modules.Points_Generation import *
+from Modules.Encryption import *
+from Modules.Decryption import *
 import os, time
 
 # Banner for the program
