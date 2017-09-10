@@ -4,7 +4,12 @@
 
 # importing libraries
 from pyfiglet import Figlet
-from Code import *
+# from Code import *
+from Input import *
+from GraphPlotting import *
+from Points_Generation import *
+from GraphPlotting import *
+from GraphPlotting import *
 import os, time
 
 # Banner for the program
