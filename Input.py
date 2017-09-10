@@ -5,6 +5,10 @@
 
 # Taking Input a,b and prime and message
 def Input_Data():
+    # Printing Welcome Message
+    print("\tAn elliptic curve is a plane curve defined\n\tby an equation of the form (Weierstrass equation)- ")
+    print("\n\t\t y^2 = x^3 + a*x + b\n")
+
     prime = int(input("Please Enter a prime number:  "))
     a = int(input("Please Enter the value of a:  "))
     b = int(input("Please Enter the value of b:  "))
